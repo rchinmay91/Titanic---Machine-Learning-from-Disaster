@@ -60,3 +60,38 @@ pred = model.predict(X_test)
 acc = accuracy_score(y_test, pred)
 
 print("Accuracy:", acc)
+
+test = pd.read_csv("data/test.csv")
+
+test["Age"] = test["Age"].fillna(
+    test["Age"].median()
+)
+
+test["Fare"] = test["Fare"].fillna(
+    test["Fare"].median()
+)
+
+test["Sex"] = test["Sex"].map({
+    "male": 0,
+    "female": 1
+})
+
+test["Embarked"] = test["Embarked"].map({
+    "S": 0,
+    "C": 1,
+    "Q": 2
+})
+
+X_final = test[features]
+
+predictions = model.predict(X_final)
+
+submission = pd.DataFrame({
+    "PassengerId": test["PassengerId"],
+    "Survived": predictions
+})
+
+submission.to_csv(
+    "submission.csv",
+    index=False
+)
